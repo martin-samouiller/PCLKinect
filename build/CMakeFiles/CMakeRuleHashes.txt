@@ -1,0 +1,11 @@
+# Hashes of file build rules.
+8a7674ce51eb699c4eb6c73500075bf7 moc_ASMConvert.cxx
+c1b777261603cb65c46c3fa17a415447 moc_acquisitionwindows.cxx
+cc776b3eec75fb6ba3fad3725c9ece70 moc_cloudwindows.cxx
+0d81e986e3846a47029d2a3f2d28bb78 moc_pclacquisition.cxx
+761d4ad42d2ac787879e17191e741a69 moc_qlabelimage.cxx
+41b1af0df2b5441adf70004ab842abbb moc_texture.cxx
+c3c0f647860202abd899c93820f3362f ui_acquisitionwindows.h
+075a22df903510f9963b0936fac17366 ui_cloudwindows.h
+2d816c6f2fe49f0409401e72681d25f5 ui_pclacquisition.h
+72751f85a5aa9404e01834530cfa4f85 ui_texture.h

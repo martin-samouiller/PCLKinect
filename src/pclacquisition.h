@@ -90,7 +90,8 @@ private:
     Grabber* device = NULL; // OpenNI grabber that takes data from the device.
     bool m_iSDeviceConnect ;
 
-    std::map<std::string, std::string> listClouds;
+    std::map< std::string, std::string > listClouds;
+    std::map< std::string, boost::shared_ptr<PointCloudC> > listCloudsPtr;
     // Create model
     QStringListModel *model;
     // Make data

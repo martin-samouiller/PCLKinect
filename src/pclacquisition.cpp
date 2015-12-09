@@ -65,23 +65,25 @@ PCLAcquisition::on_actionOpen_triggered()
     QString fichier = QFileDialog::getOpenFileName(this, "Load File", m_lastPathCloud, "Could (*.pcd)");
     m_lastPathCloud = fichier;
 
-    //Fill list "cloud.pcd , /home/martin/Documents/cloud.pcd" : permet de retrouver ou se trouve le point
-    boost::filesystem::path my_path( fichier.toStdString());
-    std::string name = my_path.filename().string();
-    listClouds[name] = fichier.toStdString();
-
-    m_strlistCloud << QString::fromStdString(name);
-    // Populate our model
-    model->setStringList(m_strlistCloud);
-    // Glue model and view together
-
-
 
     if (pcl::io::loadPCDFile<pcl::PointXYZRGB> (fichier.toStdString(), *cloudLoad) == -1) //* load the file
      {
         PCL_ERROR ("Couldn't read file test_pcd.pcd \n");
         return;
      }
+
+
+    //Fill list "cloud.pcd , /home/martin/Documents/cloud.pcd" : permet de retrouver ou se trouve le point
+    boost::filesystem::path my_path( fichier.toStdString());
+    std::string name = my_path.filename().string();
+    listClouds[name] = fichier.toStdString();
+    listCloudsPtr[name] = cloudLoad;
+
+            m_strlistCloud << QString::fromStdString(name);
+    // Populate our model
+    model->setStringList(m_strlistCloud);
+    // Glue model and view together
+
 
     //Rempli les données name, path, dans la fenêtre qui contient les nuages de points
     CloudWindows *cloudWind = new CloudWindows();
@@ -123,7 +125,7 @@ PCLAcquisition::updateCloudViewer(){
 void PCLAcquisition::on_actionTexture_triggered()
 {
     Texture *uiTexture = new Texture();
-    uiTexture->init(m_strlistCloud);
+    uiTexture->init(m_strlistCloud ,listCloudsPtr , listClouds);
     uiTexture->show();
 }
 

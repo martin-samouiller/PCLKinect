@@ -66,4 +66,7 @@
  </customwidgets>
  <resources/>
  <connections/>
+ <slots>
+  <slot>test(QString)</slot>
+ </slots>
 </ui>

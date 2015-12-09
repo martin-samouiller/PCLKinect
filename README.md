@@ -13,8 +13,16 @@ Authors :
 Martin SAMOUILLER
 Cindy ROI
 Marc RENARD
-Florent MICHEL
-
 
 
 Copyright : Ce logiciel utilise en partie le logiciel Kinfu developpé avec le framework PCL 
+
+
+
+08/12/2015 :
+Creation de la liste correspondant aux nuages de points
+Ouverture des nuages de points dans l'IHM texture
+
+Prochaine séance :
+Supprimer Nan dans les nuages de points
+Mesh des nuages de points

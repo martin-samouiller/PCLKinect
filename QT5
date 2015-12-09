@@ -1,0 +1,34 @@
+cmake_minimum_required(VERSION 2.8.3)
+
+project(pcl_acquisition_kinect)
+
+
+# Widgets finds its own dependencies (QtGui and QtCore).
+find_package(Qt5Widgets REQUIRED)
+find_package (VTK 6.1 REQUIRED)
+find_package (PCL 1.8.0 REQUIRED)
+
+# The Qt5Widgets_INCLUDES also includes the include directories for
+# dependencies QtCore and QtGui
+include_directories (${PCL_INCLUDE_DIRS} ${Qt5Widgets_INCLUDES})
+link_directories (${PCL_LIBRARY_DIRS})
+add_definitions (${PCL_DEFINITIONS} ${Qt5Widgets_DEFINITIONS})
+
+set  (project_SOURCES main.cpp pclacquisition.cpp)
+set  (project_HEADERS pclacquisition.h )
+set  (project_FORMS   pclacquisition.ui)
+set  (VTK_LIBRARIES   vtkRendering vtkGraphics vtkHybrid QVTK)
+# Executables fail to build with Qt 5 in the default configuration
+
+QT5_WRAP_CPP (project_HEADERS_MOC   ${project_HEADERS})
+QT5_WRAP_UI  (project_FORMS_HEADERS ${project_FORMS})
+
+
+ADD_EXECUTABLE  (pcl_acquisition_kinect ${project_SOURCES}
+                                ${project_FORMS_HEADERS}
+                                ${project_HEADERS_MOC})
+
+# The Qt5Widgets_LIBRARIES variable also includes QtGui and QtCore
+TARGET_LINK_LIBRARIES (pcl_acquisition_kinect ${Qt5Widgets_LIBRARIES} ${PCL_LIBRARIES} ${VTK_LIBRARIES})
+
+

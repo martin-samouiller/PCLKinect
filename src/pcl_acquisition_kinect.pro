@@ -40,4 +40,5 @@ DISTFILES += \
     CMakeLists.txt
 
 OTHER_FILES += \
-    CMakeLists.txt
+    CMakeLists.txt \
+    ../README.md

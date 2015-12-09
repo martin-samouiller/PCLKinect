@@ -1,6 +1,8 @@
 #include "cloudwindows.h"
 #include "../build/ui_cloudwindows.h"
 
+#include <QDebug>
+
 CloudWindows::CloudWindows(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::CloudWindows)
@@ -214,6 +216,10 @@ CloudWindows::colorCloudDistances (PointCloudC::Ptr cloud_)
 
   if (min == max)  // In case the cloud is flat on the chosen direction (x,y or z)
     lut_scale = 1.0;  // Avoid rounding error in boost
+
+  qDebug() << "lut scale" << lut_scale;
+  qDebug() << "Min " << min;
+  qDebug() << "Max " << max;
 
   for (PointCloudC::iterator cloud_it = cloud_->begin (); cloud_it != cloud_->end (); ++cloud_it)
   {
