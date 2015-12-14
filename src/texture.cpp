@@ -1,9 +1,12 @@
 #include "texture.h"
 #include "../build/ui_texture.h"
+#include "boost/thread.hpp"
 
 #include <QFileDialog>
 #include <QDebug>
 #include <QMessageBox>
+
+#include<pcl/point_types_conversion.h>
 
 Texture::Texture(QWidget *parent) :
     QWidget(parent),
@@ -48,55 +51,13 @@ Texture::~Texture()
 
 
 
+
 void Texture::on_btn_texture_clicked()
 {
-    // Object for storing the normals.
-    normals = pcl::PointCloud<pcl::Normal>::Ptr(new pcl::PointCloud<pcl::Normal>);
-    // Object for storing both the points and the normals.
-    cloudNormals = pcl::PointCloud<pcl::PointNormal>::Ptr (new pcl::PointCloud<pcl::PointNormal>);
+   boost::thread t(&Texture::cloudReconstructionMesh,this, this);
+   t.join();
 
-     pcl::PointCloud<pcl::Normal>::Ptr normals(new pcl::PointCloud<pcl::Normal>);
-
-    // Normal estimation.
-    pcl::NormalEstimation<pcl::PointXYZ, pcl::Normal> normalEstimation;
-    normalEstimation.setInputCloud(cloudText);
-    normalEstimation.setRadiusSearch(0.03);
-    pcl::search::KdTree<pcl::PointXYZ>::Ptr kdtree(new pcl::search::KdTree<pcl::PointXYZ>);
-    normalEstimation.setSearchMethod(kdtree);
-    normalEstimation.compute(*normals);
-
-    // The triangulation object requires the points and normals to be stored in the same structure.
-    pcl::concatenateFields(*cloudText, *normals, *cloudNormals);
-    // Tree object for searches in this new object.
-    pcl::search::KdTree<pcl::PointNormal>::Ptr kdtree2(new pcl::search::KdTree<pcl::PointNormal>);
-    kdtree2->setInputCloud(cloudNormals);
-
-    // Triangulation object.
-    pcl::GreedyProjectionTriangulation<pcl::PointNormal> triangulation;
-    // Output object, containing the mesh.
-
-    // Maximum distance between connected points (maximum edge length).
-    triangulation.setSearchRadius(0.025);
-    // Maximum acceptable distance for a point to be considered,
-    // relative to the distance of the nearest point.
-    triangulation.setMu(2.5);
-    // How many neighbors are searched for.
-    triangulation.setMaximumNearestNeighbors(100);
-    // Points will not be connected to the current point
-    // if their normals deviate more than the specified angle.
-    triangulation.setMaximumSurfaceAngle(M_PI / 4); // 45 degrees.
-    // If false, the direction of normals will not be taken into account
-    // when computing the angle between them.
-    triangulation.setNormalConsistency(false);
-    // Minimum and maximum angle there can be in a triangle.
-    // The first is not guaranteed, the second is.
-    triangulation.setMinimumAngle(M_PI / 18); // 10 degrees.
-    triangulation.setMaximumAngle(2 * M_PI / 3); // 120 degrees.
-
-    // Triangulate the cloud.
-    triangulation.setInputCloud(cloudNormals);
-    triangulation.setSearchMethod(kdtree2);
-    triangulation.reconstruct(triangles);
+  //t.start_thread();
 }
 
 
@@ -105,8 +66,7 @@ void Texture::on_btn_saveTexture_clicked()
 {
     QString fichier = QFileDialog::getSaveFileName(this, "Savec File", QString(), "Mesh (*.vtk)");
     if(fichier != NULL && fichier != "")
-         pcl::io::saveVTKFile(fichier.toStdString(), triangles);
-    // Save to disk.
+         pcl::io::saveVTKFile(fichier.toStdString(), _triangles);
 
 }
 
@@ -135,18 +95,79 @@ void Texture::on_comboBox_currentIndexChanged(const QString &arg1)
     }
 
     PointCloudC::Ptr cloud = m_listCloudsPtr[arg1.toStdString()];
-    if(cloud != NULL){
+    pcl::copyPointCloud(*cloud, *cloudText);
+    if(cloudText != NULL){
         qDebug() << "cloud != null , update point cloud  ";
-        qDebug() << "Size : " << QString::number(cloud->points.size());
+        qDebug() << "Size : " << QString::number(cloudText->points.size());
         try{
-            viewerCloud->updatePointCloud (cloud, "cloud");
+            viewerCloud->updatePointCloud (cloudText, "cloud");
             ui->qvtkcloud->update();
         }catch (PCLException ex){
              QMessageBox::warning(this, tr("Texture"),  tr("Impossible de charger le nuage de points") , QMessageBox::Ok);
         }
-
-
     }
 }
 
+void Texture::cloudReconstructionMesh(Texture *parent)
+{
 
+   // parent->ui->progressBar->setValue(0.1);
+    // Load input file into a PointCloud<T> with an appropriate type
+    //* the data should be available in cloud
+
+    // Normal estimation*
+    pcl::NormalEstimation<pcl::PointXYZ, pcl::Normal> n;
+    pcl::PointCloud<pcl::Normal>::Ptr normals (new pcl::PointCloud<pcl::Normal>);
+    pcl::search::KdTree<pcl::PointXYZ>::Ptr tree (new pcl::search::KdTree<pcl::PointXYZ>);
+    tree->setInputCloud (cloudText);
+    n.setInputCloud (cloudText);
+    n.setSearchMethod (tree);
+    n.setKSearch (20);
+    n.compute (*normals);
+    //* normals should not contain the point normals + surface curvatures
+
+    // Concatenate the XYZ and normal fields*
+    pcl::PointCloud<pcl::PointNormal>::Ptr cloud_with_normals (new pcl::PointCloud<pcl::PointNormal>);
+    pcl::concatenateFields (*cloudText, *normals, *cloud_with_normals);
+    //* cloud_with_normals = cloud + normals
+
+    // Create search tree*
+    pcl::search::KdTree<pcl::PointNormal>::Ptr tree2 (new pcl::search::KdTree<pcl::PointNormal>);
+    tree2->setInputCloud (cloud_with_normals);
+
+    // Initialize objects
+    pcl::GreedyProjectionTriangulation<pcl::PointNormal> gp3;
+
+    // Set the maximum distance between connected points (maximum edge length)
+    gp3.setSearchRadius (parent->ui->doubleSpinBox_RadiuSearch->value());
+
+    // Set typical values for the parameters
+    gp3.setMu (2.5);
+    gp3.setMaximumNearestNeighbors (parent->ui->spinBox_MaxNearest->value());
+    gp3.setMaximumSurfaceAngle(M_PI/4); // 45 degrees
+    gp3.setMinimumAngle(M_PI/18); // 10 degrees
+    gp3.setMaximumAngle(2*M_PI/3); // 120 degrees
+    gp3.setNormalConsistency(false);
+
+    // Get result
+    gp3.setInputCloud (cloud_with_normals);
+    gp3.setSearchMethod (tree2);
+    gp3.reconstruct (_triangles);
+
+    // Additional vertex information
+    std::vector<int> parts = gp3.getPartIDs();
+    std::vector<int> states = gp3.getPointStates();
+
+    parent->getQVTKWidgetTexture()->update();
+    parent->getVisualizerTexture()->addPolygonMesh(_triangles);
+
+}
+
+boost::shared_ptr<pcl::visualization::PCLVisualizer> Texture::getVisualizerTexture()
+{
+    return viewerTexture;
+}
+
+QVTKWidget* Texture::getQVTKWidgetTexture(){
+    return ui->qvtkTexture;
+}

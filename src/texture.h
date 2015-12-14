@@ -20,6 +20,8 @@
 #include <vtkRenderWindow.h>
 #include <vtk3DWidget.h>
 
+#include <QVTKWidget.h>
+
 using namespace pcl;
 using namespace std;
 
@@ -49,18 +51,23 @@ private slots:
     void on_btn_saveTexture_clicked();
     void on_comboBox_currentIndexChanged(const QString &arg1);
 
+    boost::shared_ptr<pcl::visualization::PCLVisualizer> getVisualizerTexture();
+    QVTKWidget* getQVTKWidgetTexture();
+
+
 protected:
     boost::shared_ptr<pcl::visualization::PCLVisualizer> viewerCloud;
     boost::shared_ptr<pcl::visualization::PCLVisualizer> viewerTexture;
     PointCloudT::Ptr cloudText;
+    void cloudReconstructionMesh(Texture *parent);
 
 private:
     Ui::Texture *ui;
     // Object for storing the normals.
-    pcl::PointCloud<pcl::Normal>::Ptr normals;
+    pcl::PointCloud<pcl::Normal>::Ptr _normals;
     // Object for storing both the points and the normals.
-    pcl::PointCloud<pcl::PointNormal>::Ptr cloudNormals;
-    pcl::PolygonMesh triangles;
+    pcl::PointCloud<pcl::PointNormal>::Ptr _cloudNormals;
+    pcl::PolygonMesh _triangles;
 
     DictionaryCloudPtr m_listCloudsPtr;
     DictionaryCloudName m_listCloudsName;
