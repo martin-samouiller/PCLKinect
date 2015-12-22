@@ -41,6 +41,13 @@ Texture::Texture(QWidget *parent) :
     ui->qvtkTexture->update();
 
 
+    connect(&_ThreadTexture, SIGNAL(valueChangedMesh()), this, SLOT(eventSlotValueTriangle()));
+
+    //Mise a jour sinon les paramètres sont = 0 et le meshing plante
+    _ThreadTexture.setRadiusSearch(ui->doubleSpinBox_RadiuSearch->value());
+    _ThreadTexture.setMaxNearest(ui->spinBox_MaxNearest->value());
+
+
 
 }
 
@@ -54,10 +61,9 @@ Texture::~Texture()
 
 void Texture::on_btn_texture_clicked()
 {
-   boost::thread t(&Texture::cloudReconstructionMesh,this, this);
-   t.join();
-
-  //t.start_thread();
+    //Cloud a utiliser pour faire le mesh
+    _ThreadTexture.setCloud(cloudText);
+    _ThreadTexture.start();
 }
 
 
@@ -66,7 +72,7 @@ void Texture::on_btn_saveTexture_clicked()
 {
     QString fichier = QFileDialog::getSaveFileName(this, "Savec File", QString(), "Mesh (*.vtk)");
     if(fichier != NULL && fichier != "")
-         pcl::io::saveVTKFile(fichier.toStdString(), _triangles);
+         pcl::io::saveVTKFile(fichier.toStdString(), _trianglesSave);
 
 }
 
@@ -108,60 +114,6 @@ void Texture::on_comboBox_currentIndexChanged(const QString &arg1)
     }
 }
 
-void Texture::cloudReconstructionMesh(Texture *parent)
-{
-
-   // parent->ui->progressBar->setValue(0.1);
-    // Load input file into a PointCloud<T> with an appropriate type
-    //* the data should be available in cloud
-
-    // Normal estimation*
-    pcl::NormalEstimation<pcl::PointXYZ, pcl::Normal> n;
-    pcl::PointCloud<pcl::Normal>::Ptr normals (new pcl::PointCloud<pcl::Normal>);
-    pcl::search::KdTree<pcl::PointXYZ>::Ptr tree (new pcl::search::KdTree<pcl::PointXYZ>);
-    tree->setInputCloud (cloudText);
-    n.setInputCloud (cloudText);
-    n.setSearchMethod (tree);
-    n.setKSearch (20);
-    n.compute (*normals);
-    //* normals should not contain the point normals + surface curvatures
-
-    // Concatenate the XYZ and normal fields*
-    pcl::PointCloud<pcl::PointNormal>::Ptr cloud_with_normals (new pcl::PointCloud<pcl::PointNormal>);
-    pcl::concatenateFields (*cloudText, *normals, *cloud_with_normals);
-    //* cloud_with_normals = cloud + normals
-
-    // Create search tree*
-    pcl::search::KdTree<pcl::PointNormal>::Ptr tree2 (new pcl::search::KdTree<pcl::PointNormal>);
-    tree2->setInputCloud (cloud_with_normals);
-
-    // Initialize objects
-    pcl::GreedyProjectionTriangulation<pcl::PointNormal> gp3;
-
-    // Set the maximum distance between connected points (maximum edge length)
-    gp3.setSearchRadius (parent->ui->doubleSpinBox_RadiuSearch->value());
-
-    // Set typical values for the parameters
-    gp3.setMu (2.5);
-    gp3.setMaximumNearestNeighbors (parent->ui->spinBox_MaxNearest->value());
-    gp3.setMaximumSurfaceAngle(M_PI/4); // 45 degrees
-    gp3.setMinimumAngle(M_PI/18); // 10 degrees
-    gp3.setMaximumAngle(2*M_PI/3); // 120 degrees
-    gp3.setNormalConsistency(false);
-
-    // Get result
-    gp3.setInputCloud (cloud_with_normals);
-    gp3.setSearchMethod (tree2);
-    gp3.reconstruct (_triangles);
-
-    // Additional vertex information
-    std::vector<int> parts = gp3.getPartIDs();
-    std::vector<int> states = gp3.getPointStates();
-
-    parent->getQVTKWidgetTexture()->update();
-    parent->getVisualizerTexture()->addPolygonMesh(_triangles);
-
-}
 
 boost::shared_ptr<pcl::visualization::PCLVisualizer> Texture::getVisualizerTexture()
 {
@@ -171,3 +123,23 @@ boost::shared_ptr<pcl::visualization::PCLVisualizer> Texture::getVisualizerTextu
 QVTKWidget* Texture::getQVTKWidgetTexture(){
     return ui->qvtkTexture;
 }
+
+void Texture::on_doubleSpinBox_RadiuSearch_valueChanged(double arg1)
+{
+    qDebug() << "radius : " << arg1;
+    _ThreadTexture.setRadiusSearch(arg1);
+}
+
+void Texture::on_spinBox_MaxNearest_valueChanged(int arg1)
+{
+     qDebug() << "Max nearest : " << arg1;
+    _ThreadTexture.setMaxNearest(arg1);
+}
+
+void Texture::eventSlotValueTriangle(){
+    qDebug() << "Event Slot : triangle reçu";
+    _trianglesSave = *_ThreadTexture.getTriangles();
+    viewerTexture->addPolygonMesh(_trianglesSave);
+    ui->qvtkTexture->update();
+}
+

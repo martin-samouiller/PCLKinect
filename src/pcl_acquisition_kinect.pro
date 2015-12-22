@@ -17,7 +17,8 @@ SOURCES += main.cpp\
     texture.cpp \
     acquisitionwindows.cpp \
     qlabelimage.cpp \
-    cloudwindows.cpp
+    cloudwindows.cpp \
+    texturethread.cpp
 
 HEADERS  += pclacquisition.h \
     recalagepoint.h \
@@ -25,7 +26,8 @@ HEADERS  += pclacquisition.h \
     acquisitionwindows.h \
     ASMConvert.h \
     qlabelimage.h \
-    cloudwindows.h
+    cloudwindows.h \
+    texturethread.h
 
 FORMS    += pclacquisition.ui \
     texture.ui \
