@@ -145,7 +145,7 @@
   </action>
   <action name="actionICP">
    <property name="text">
-    <string>ICP</string>
+    <string>Registration</string>
    </property>
   </action>
  </widget>

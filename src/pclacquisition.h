@@ -82,8 +82,7 @@ private slots:
     on_actionFiltrer_triggered();
     void
     on_actionICP_triggered();
-    void
-    on_listClouds_current_change(QModelIndex cur, QModelIndex pre);
+
 
 private:
     Ui::PCLAcquisition *ui;

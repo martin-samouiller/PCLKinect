@@ -6,6 +6,7 @@
 #include "texture.h"
 #include "acquisitionwindows.h"
 #include "cloudwindows.h"
+#include "registration.h"
 
 #include <QMessageBox>
 #include <QtDebug>
@@ -136,13 +137,8 @@ void PCLAcquisition::on_actionFiltrer_triggered()
 
 void PCLAcquisition::on_actionICP_triggered()
 {
-
+    Registration *uiRegistration = new Registration();
+    //uiRegistration->init(m_strlistCloud ,listCloudsPtr , listClouds);
+    uiRegistration->show();
 }
 
-void PCLAcquisition::on_listClouds_current_change(QModelIndex cur, QModelIndex pre)
-{
-    if(pre.row() != -1) {
-            // do stuff
-    }
-
-}

@@ -24,16 +24,11 @@
 
 #include "texturethread.h"
 
+#include "defineType.h"
+
 using namespace pcl;
 using namespace std;
 
-typedef pcl::PointXYZ PointT;
-typedef pcl::PointCloud<PointT> PointCloudT;
-
-typedef pcl::PointXYZRGB PointC;
-typedef pcl::PointCloud<PointC> PointCloudC;
-typedef std::map< std::string, boost::shared_ptr<PointCloudC> > DictionaryCloudPtr;
-typedef std::map< std::string, std::string > DictionaryCloudName;
 
 namespace Ui {
 class Texture;

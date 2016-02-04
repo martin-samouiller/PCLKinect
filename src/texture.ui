@@ -89,7 +89,7 @@
             <item>
              <widget class="QPushButton" name="btn_saveTexture">
               <property name="text">
-               <string>Save texture</string>
+               <string>Save</string>
               </property>
              </widget>
             </item>

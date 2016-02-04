@@ -14,9 +14,9 @@ include_directories ( ${OpenCV_INCLUDE_DIRS} )
 link_directories    (${OpenCV_INCLUDE_DIRS})
 add_definitions     (${OpenCV_INCLUDE_DIRS})
 
-set  (project_SOURCES main.cpp pclacquisition.cpp texture.cpp acquisitionwindows.cpp qlabelimage.cpp cloudwindows.cpp texturethread.cpp)
-set  (project_HEADERS pclacquisition.h texture.h acquisitionwindows.h qlabelimage.h ASMConvert.h cloudwindows.h texturethread.h)
-set  (project_FORMS   pclacquisition.ui texture.ui acquisitionwindows.ui cloudwindows.ui)
+set  (project_SOURCES main.cpp pclacquisition.cpp texture.cpp acquisitionwindows.cpp qlabelimage.cpp cloudwindows.cpp texturethread.cpp icpthread.cpp registration.cpp)
+set  (project_HEADERS pclacquisition.h texture.h acquisitionwindows.h qlabelimage.h ASMConvert.h cloudwindows.h texturethread.h icpthread.h registration.h)
+set  (project_FORMS   pclacquisition.ui texture.ui acquisitionwindows.ui cloudwindows.ui registration.ui)
 set  (VTK_LIBRARIES   vtkRendering vtkGraphics vtkHybrid QVTK)
 
 QT4_WRAP_CPP (project_HEADERS_MOC   ${project_HEADERS})

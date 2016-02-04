@@ -13,26 +13,30 @@ TEMPLATE = app
 
 SOURCES += main.cpp\
         pclacquisition.cpp \
-    recalagepoint.cpp \
     texture.cpp \
     acquisitionwindows.cpp \
     qlabelimage.cpp \
     cloudwindows.cpp \
-    texturethread.cpp
+    texturethread.cpp \
+    icpthread.cpp \
+    registration.cpp
 
 HEADERS  += pclacquisition.h \
-    recalagepoint.h \
     texture.h \
     acquisitionwindows.h \
     ASMConvert.h \
     qlabelimage.h \
     cloudwindows.h \
-    texturethread.h
+    texturethread.h \
+    icpthread.h \
+    registration.h \
+    defineType.h
 
 FORMS    += pclacquisition.ui \
     texture.ui \
     acquisitionwindows.ui \
-    cloudwindows.ui
+    cloudwindows.ui \
+    registration.ui
 
 INCLUDEPATH += /usr/include/pcl-1.7 /usr/local/include/vtk-5.8
 LIBS += /usr/lib
