@@ -24,8 +24,17 @@ class icpthread : public QThread
 {
      Q_OBJECT
 
+signals:
+    void icpFinish() ;
+
 public:
     icpthread();
+    void
+    init(PointCloudT::Ptr cloudSource, PointCloudT::Ptr cloudTarget);
+    void
+    getFinishCloud(PointCloudT::Ptr cloudResult);
+    void
+    createMsgError(QString msg);
 
     void
     run();
@@ -36,6 +45,7 @@ public:
 private:
     PointCloudT::Ptr _cloudSource;
     PointCloudT::Ptr _cloudTarget;
+    PointCloudT::Ptr  _finalCloud;
     QString _message;
 };
 

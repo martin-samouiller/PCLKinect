@@ -97,8 +97,6 @@ void CloudWindows::init(PointCloudC::Ptr cloud, std::string nameCloud){
 
     ui->widgetCloud->show();
 
-
-
     return;
 
 }

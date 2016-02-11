@@ -5,15 +5,12 @@
 #include <pcl/register_point_struct.h>
 #include <pcl/registration/registration.h>
 
+#include <QMessageBox>
 
 using namespace registration;
 
 icpthread::icpthread()
 {
-
-
-
-
 
 }
 
@@ -22,15 +19,17 @@ void icpthread::run(){
      Eigen::Matrix4d transformation_matrix = Eigen::Matrix4d::Identity ();
 
     // Objects for storing the point clouds.
-    pcl::PointCloud<pcl::PointXYZ>::Ptr finalCloud(new pcl::PointCloud<pcl::PointXYZ>);
+    _finalCloud.reset(new pcl::PointCloud<pcl::PointXYZ>);
 
     // Read two PCD files from disk.
-    if (_cloudSource != NULL)
+    if (_cloudSource == NULL)
     {
+        createMsgError("Impossible de lire le nuage source");
         return ;
     }
-    if (_cloudTarget != NULL)
+    if (_cloudTarget == NULL)
     {
+        createMsgError("Impossible de lire le nuage target");
         return ;
     }
 
@@ -39,7 +38,13 @@ void icpthread::run(){
     registration.setInputSource(_cloudSource);
     registration.setInputTarget(_cloudTarget);
 
-    registration.align(*finalCloud);
+    try{
+        registration.align(*_finalCloud);
+    }catch(exception ex){
+        createMsgError(QString(ex.what()));
+        return;
+    }
+
     if (registration.hasConverged())
     {
         _message = QString();
@@ -57,6 +62,8 @@ void icpthread::run(){
        _message.append("ICP did not converge. \n" );
     }
 
+    //Signal envoyer
+    emit icpFinish();
 
 }
 
@@ -74,4 +81,34 @@ icpthread::print4x4Matrix (const Eigen::Matrix4d & matrix)
   return msg;
 }
 
+void
+icpthread::init(PointCloudT::Ptr cloudSource, PointCloudT::Ptr cloudTarget)
+{
+    _cloudSource = cloudSource;
+    _cloudTarget = cloudTarget;
+}
 
+void
+icpthread::getFinishCloud(PointCloudT::Ptr cloudResult)
+{
+
+    if (_finalCloud != NULL)
+    {
+        try{
+            pcl::copyPointCloud(*_finalCloud, *cloudResult);
+        }catch (PCLException ex){
+            createMsgError("Impossible de copier le nuage de point");
+        }
+    }
+
+}
+
+
+void icpthread::createMsgError(QString msg){
+
+    QMessageBox msgBox;
+    msgBox.setText(msg);
+    msgBox.setIcon(QMessageBox::Warning);
+    msgBox.exec();
+
+}

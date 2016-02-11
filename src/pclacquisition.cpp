@@ -7,6 +7,7 @@
 #include "acquisitionwindows.h"
 #include "cloudwindows.h"
 #include "registration.h"
+#include "filters.h"
 
 #include <QMessageBox>
 #include <QtDebug>
@@ -80,7 +81,7 @@ PCLAcquisition::on_actionOpen_triggered()
     listClouds[name] = fichier.toStdString();
     listCloudsPtr[name] = cloudLoad;
 
-            m_strlistCloud << QString::fromStdString(name);
+    m_strlistCloud << QString::fromStdString(name);
     // Populate our model
     model->setStringList(m_strlistCloud);
     // Glue model and view together
@@ -133,12 +134,15 @@ void PCLAcquisition::on_actionTexture_triggered()
 void PCLAcquisition::on_actionFiltrer_triggered()
 {
 
+    Filters *uiFilters = new Filters();
+    uiFilters->init(m_strlistCloud ,listCloudsPtr , listClouds);
+    uiFilters->show();
 }
 
 void PCLAcquisition::on_actionICP_triggered()
 {
     Registration *uiRegistration = new Registration();
-    //uiRegistration->init(m_strlistCloud ,listCloudsPtr , listClouds);
+    uiRegistration->init(m_strlistCloud ,listCloudsPtr , listClouds);
     uiRegistration->show();
 }
 

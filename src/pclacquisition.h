@@ -25,14 +25,9 @@
 // Point Cloud Library
 #include <pcl/point_cloud.h>
 #include <pcl/point_types.h>
-//#include <pcl/visualization/pcl_visualizer.h>
-//#include <pcl/visualization/image_viewer.h>
 #include <pcl/visualization/cloud_viewer.h>
-
 #include <pcl/console/parse.h>
 #include <pcl/common/time.h>
-
-//#include <pcl/io/openni_camera/openni_image.h>
 #include <pcl/io/openni_grabber.h>
 #include <pcl/io/pcd_io.h>
 
