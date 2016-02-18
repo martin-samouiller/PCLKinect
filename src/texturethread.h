@@ -43,7 +43,17 @@ public:
     void
     setMaxNearest(int maxNearest)          {_maxNearest = maxNearest ; }
     void
+    setKSearch(int kSearch)          {_ksearch = kSearch ; }
+    void
     setRadiusSearch(double radiusSearch)   {_radiuSearch = radiusSearch ;}
+    void
+    setMu(double mu)   {_mu = mu ;}
+    void
+    setMaxSurfaceAngle(double maxsurfaceAngle)   {_maxSurfaceAng = maxsurfaceAngle ;}
+    void
+    setMaxAngle(double maxAngle)   {_maxAngle = maxAngle ;}
+    void
+    setMinAngle(double minAngle)   {_minAngle = minAngle ;}
     void
     setCloud(PointCloudT::Ptr cloudText)   {_cloudText = cloudText ;}
     pcl::PolygonMesh *
@@ -61,6 +71,11 @@ private:
     PointCloudT::Ptr _cloudText;
     int  _maxNearest = 0;
     double _radiuSearch = 0.0;
+    double _mu =0.0;
+    int _ksearch = 0;
+    double _maxSurfaceAng = 0.0;
+    double _maxAngle =0.0;
+    double _minAngle = 0.0;
 
 };
 

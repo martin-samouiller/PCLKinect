@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Form</string>
+   <string>Filters</string>
   </property>
   <layout class="QHBoxLayout" name="horizontalLayout">
    <item>
@@ -70,7 +70,7 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>288</width>
+            <width>317</width>
             <height>280</height>
            </rect>
           </property>

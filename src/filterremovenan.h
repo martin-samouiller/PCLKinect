@@ -18,7 +18,9 @@ public:
 
     void
     init(PointCloudT::Ptr cloudSrc , PointCloudT::Ptr  cloudFinal);
-
+signals:
+    void
+    signalFinishFilter();
 
 private slots:
     void
@@ -28,6 +30,7 @@ private:
     Ui::FilterRemoveNaN *ui;
     PointCloudT::Ptr _cloudSrc;
     PointCloudT::Ptr _cloudFinal;
+
 };
 
 #endif // FILTERREMOVENAN_H

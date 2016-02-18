@@ -33,7 +33,7 @@ PCLAcquisition::PCLAcquisition(QWidget *parent) :
     model = new QStringListModel(this);
     ui->listView_Clouds->setModel(model);
     connect(ui->listView_Clouds->selectionModel(), SIGNAL(currentChanged(QModelIndex,QModelIndex)), this, SLOT(on_listClouds_current_change(QModelIndex, QModelIndex)));
-    m_lastPathCloud = "";
+    m_lastPathCloud = "/home/martin/Documents/ProjetKinect/DataPCD/";
 }
 
 PCLAcquisition::~PCLAcquisition()

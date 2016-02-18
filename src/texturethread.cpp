@@ -8,6 +8,7 @@ TextureThread::TextureThread()
 
 void TextureThread::run()
 {
+
     // Normal estimation*
     pcl::NormalEstimation<pcl::PointXYZ, pcl::Normal> n;
     pcl::PointCloud<pcl::Normal>::Ptr normals (new pcl::PointCloud<pcl::Normal>);
@@ -15,7 +16,7 @@ void TextureThread::run()
     tree->setInputCloud (_cloudText);
     n.setInputCloud (_cloudText);
     n.setSearchMethod (tree);
-    n.setKSearch (20);
+    n.setKSearch (_ksearch);
     n.compute (*normals);
     //* normals should not contain the point normals + surface curvatures
 
@@ -41,11 +42,18 @@ void TextureThread::run()
     gp3.setSearchRadius (_radiuSearch);
 
     // Set typical values for the parameters
-    gp3.setMu (2.5);
+    /*gp3.setMu (2.5);
     gp3.setMaximumNearestNeighbors (_maxNearest);
     gp3.setMaximumSurfaceAngle(M_PI/4); // 45 degrees
     gp3.setMinimumAngle(M_PI/18); // 10 degrees
     gp3.setMaximumAngle(2*M_PI/3); // 120 degrees
+    gp3.setNormalConsistency(false);*/
+
+    gp3.setMu (_mu);
+    gp3.setMaximumNearestNeighbors (_maxNearest);
+    gp3.setMaximumSurfaceAngle(_maxSurfaceAng); // 45 degrees
+    gp3.setMinimumAngle(_minAngle); // 10 degrees
+    gp3.setMaximumAngle(_maxAngle); // 120 degrees
     gp3.setNormalConsistency(false);
 
     qDebug() << "run : setNormalConsistency";

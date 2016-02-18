@@ -31,13 +31,11 @@
 #include <opencv2/imgproc/imgproc.hpp>
 #include "qlabelimage.h"
 
+#include "defineType.h"
 
 using namespace pcl;
 using namespace std;
 
-
-typedef pcl::PointXYZ PointT;
-typedef pcl::PointCloud<PointT> PointCloudT;
 
 namespace Ui {
 class AcquisitionWindows;
@@ -58,6 +56,7 @@ protected:
     boost::shared_ptr<pcl::visualization::PCLVisualizer> viewer;
     PointCloudT::Ptr cloud;
     PointCloudT::ConstPtr cloudSave ;
+    PointCloudC::Ptr cloudTexture;
      //Register Callback
 
 public slots:

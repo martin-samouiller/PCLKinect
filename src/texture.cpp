@@ -44,10 +44,11 @@ Texture::Texture(QWidget *parent) :
     connect(&_ThreadTexture, SIGNAL(valueChangedMesh()), this, SLOT(eventSlotValueTriangle()));
 
     //Mise a jour sinon les paramètres sont = 0 et le meshing plante
-    _ThreadTexture.setRadiusSearch(ui->doubleSpinBox_RadiuSearch->value());
-    _ThreadTexture.setMaxNearest(ui->spinBox_MaxNearest->value());
+    majParameters();
 
-
+    ui->dspinBox_MaxAngle->setMaximum(2*M_PI);
+    ui->dspinBox_MaximunSurf->setMaximum(2*M_PI);
+    ui->dspinBox_MinAngle->setMaximum(2*M_PI);
 
 }
 
@@ -61,6 +62,7 @@ Texture::~Texture()
 
 void Texture::on_btn_texture_clicked()
 {
+    ui->btn_LED->setStyleSheet("background-color: red;");
     //Cloud a utiliser pour faire le mesh
     _ThreadTexture.setCloud(cloudText);
     _ThreadTexture.start();
@@ -124,22 +126,85 @@ QVTKWidget* Texture::getQVTKWidgetTexture(){
     return ui->qvtkTexture;
 }
 
+
+
+
+void Texture::eventSlotValueTriangle(){
+
+    viewerTexture->removePolygonMesh("mesh triangle" );
+    qDebug() << "Event Slot : triangle reçu";
+    _trianglesSave = *_ThreadTexture.getTriangles();
+    viewerTexture->addPolygonMesh(_trianglesSave, "mesh triangle" );
+    ui->qvtkTexture->update();
+    ui->btn_LED->setStyleSheet("background-color: green;");
+}
+
+
+void Texture::on_spinBox_KSearch_valueChanged(int arg1)
+{
+    majParameters();
+    majInfosAngles();
+}
+
+void Texture::on_dspinBox_Mu_valueChanged(double arg1)
+{
+    majParameters();
+    majInfosAngles();
+}
+
+void Texture::on_dspinBox_MaximunSurf_valueChanged(double arg1)
+{
+    majParameters();
+    majInfosAngles();
+}
+
+void Texture::on_dspinBox_MinAngle_valueChanged(double arg1)
+{
+    majParameters();
+    majInfosAngles();
+}
+
+void Texture::on_dspinBox_MaxAngle_valueChanged(double arg1)
+{
+    majParameters();
+    majInfosAngles();
+}
+
 void Texture::on_doubleSpinBox_RadiuSearch_valueChanged(double arg1)
 {
-    qDebug() << "radius : " << arg1;
-    _ThreadTexture.setRadiusSearch(arg1);
+    majParameters();
+    majInfosAngles();
 }
 
 void Texture::on_spinBox_MaxNearest_valueChanged(int arg1)
 {
-     qDebug() << "Max nearest : " << arg1;
-    _ThreadTexture.setMaxNearest(arg1);
+     majParameters();
+     majInfosAngles();
 }
 
-void Texture::eventSlotValueTriangle(){
-    qDebug() << "Event Slot : triangle reçu";
-    _trianglesSave = *_ThreadTexture.getTriangles();
-    viewerTexture->addPolygonMesh(_trianglesSave);
-    ui->qvtkTexture->update();
+void Texture::majParameters(){
+   // qDebug() << "radius : " << arg1;
+   // qDebug() << "Max nearest : " << arg1;
+    _ThreadTexture.setRadiusSearch(ui->doubleSpinBox_RadiuSearch->value());
+    _ThreadTexture.setMaxNearest(ui->spinBox_MaxNearest->value());
+    _ThreadTexture.setKSearch(ui->spinBox_KSearch->value());
+    _ThreadTexture.setMaxAngle(ui->dspinBox_MaxAngle->value());
+    _ThreadTexture.setMinAngle(ui->dspinBox_MinAngle->value());
+    _ThreadTexture.setMu(ui->dspinBox_Mu->value());
+    _ThreadTexture.setMaxSurfaceAngle(ui->dspinBox_MaximunSurf->value());
 }
+
+void Texture::majInfosAngles(){
+
+    QString msgAngle = "";
+    msgAngle.append("Max angle : "); msgAngle.append(QString::number((ui->dspinBox_MaxAngle->value()*180.0) / M_PI)); msgAngle.append("° \n");
+    msgAngle.append("Min angle : "); msgAngle.append(QString::number((ui->dspinBox_MinAngle->value()*180.0) / M_PI)); msgAngle.append("° \n");
+    msgAngle.append("Max Surface angle : "); msgAngle.append(QString::number((ui->dspinBox_MaximunSurf->value()*180.0) / M_PI)); msgAngle.append("° \n");
+    ui->lbl_Infos->setText(msgAngle);
+
+}
+
+
+
+
 

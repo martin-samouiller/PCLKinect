@@ -6,6 +6,7 @@
 #include <pcl/registration/registration.h>
 
 #include <QMessageBox>
+#include <QtDebug>
 
 using namespace registration;
 
@@ -38,8 +39,10 @@ void icpthread::run(){
     registration.setInputSource(_cloudSource);
     registration.setInputTarget(_cloudTarget);
 
+    pcl::PointCloud<pcl::PointXYZ> final;
+
     try{
-        registration.align(*_finalCloud);
+        registration.align(final);
     }catch(exception ex){
         createMsgError(QString(ex.what()));
         return;
@@ -61,6 +64,13 @@ void icpthread::run(){
        _message = QString();
        _message.append("ICP did not converge. \n" );
     }
+
+    pcl::copyPointCloud(final, *_finalCloud);
+
+    qDebug() << "ICP Finish";
+    qDebug() << _message;
+    qDebug() << "Final Cloud size : " << QString::number(_finalCloud->points.size());
+
 
     //Signal envoyer
     emit icpFinish();
@@ -96,6 +106,8 @@ icpthread::getFinishCloud(PointCloudT::Ptr cloudResult)
     {
         try{
             pcl::copyPointCloud(*_finalCloud, *cloudResult);
+            qDebug() << "Cloud result size : " << QString::number(cloudResult->points.size());
+
         }catch (PCLException ex){
             createMsgError("Impossible de copier le nuage de point");
         }
@@ -112,3 +124,4 @@ void icpthread::createMsgError(QString msg){
     msgBox.exec();
 
 }
+

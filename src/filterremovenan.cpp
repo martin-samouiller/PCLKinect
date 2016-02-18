@@ -26,8 +26,13 @@ FilterRemoveNaN::~FilterRemoveNaN()
 
 void FilterRemoveNaN::on_pushButton_clicked()
 {
-    //remove NAN points from the cloud
+  //remove NAN points from the cloud
   std::vector<int> indices;
   pcl::removeNaNFromPointCloud(*_cloudSrc, *_cloudFinal, indices);
+  ui->lbl_SizeSrc->setText(QString::number(_cloudSrc->points.size()));
+  ui->lbl_SizeFinal->setText(QString::number(_cloudFinal->points.size()));
+  float diff = _cloudSrc->points.size() - _cloudFinal->points.size();
+  ui->lbl_NanRemove->setText(QString::number(diff));
 
+  emit signalFinishFilter();
 }

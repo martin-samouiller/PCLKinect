@@ -2,6 +2,9 @@
 #include "../build/ui_registration.h"
 #include <QtDebug>
 #include <QMessageBox>
+#include <QFileDialog>
+
+#include <pcl/io/pcd_io.h>
 
 
 
@@ -21,10 +24,13 @@ Registration::Registration(QWidget *parent) :
     viewerCloudFinish->setBackgroundColor (0.1, 0.1, 0.1);
     viewerCloudFinish->initCameraParameters ();
     viewerCloudFinish->resetCamera();
+
     ui->qvtk_CloudFinalRegistration->update();
 
     _icpCompute = new icpthread();
     connect(_icpCompute , SIGNAL(icpFinish()), this, SLOT(eventSlotFinishICP()));
+
+     _eTypeRegistration = ICP ;
 }
 
 Registration::~Registration()
@@ -111,6 +117,7 @@ void Registration::on_pushButton_clicked()
 
     else if(_eTypeRegistration == ICP)
     {
+        qDebug() << "Lancement ICP";
         _icpCompute->init(_cloudSource, _cloudTarget);
         _icpCompute->run();
     }
@@ -122,7 +129,16 @@ void Registration::on_pushButton_clicked()
 
 void Registration::on_btn_SaveCloudFinal_clicked()
 {
+    try {
+        QString fichier = QFileDialog::getSaveFileName(this, "Savec File", QString(), "Could (*.pcd)");
+        if(_cloudFinish != NULL && fichier != NULL && fichier != "")
+             pcl::io::savePCDFileASCII(fichier.toStdString(), *_cloudFinish);
 
+    }
+    catch (exception e){
+        QMessageBox::warning(this, tr("Acquisition"), e.what(), QMessageBox::Ok);
+
+    }
 }
 
 void Registration::on_comboBox_TypeRegist_currentIndexChanged(const QString &arg1)
@@ -138,11 +154,14 @@ void Registration::on_comboBox_TypeRegist_currentIndexChanged(const QString &arg
 
 void Registration::eventSlotFinishICP()
 {
+
+    qDebug() << "eventSlotFinishICP";
+
     _cloudFinish.reset(new PointCloudT);
     _icpCompute->getFinishCloud(_cloudFinish);
-
-
-    viewerCloudFinish->updatePointCloud (_cloudFinish   , "cloud");
+    viewerCloudFinish->addPointCloud(_cloudFinish, "cloud");
     ui->qvtk_CloudFinalRegistration->update();
+
+    qDebug() << "eventSlotFinishICP cloud result size : " << QString::number(_cloudFinish->points.size());
 
 }

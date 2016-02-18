@@ -21,7 +21,9 @@ SOURCES += main.cpp\
     icpthread.cpp \
     registration.cpp \
     filters.cpp \
-    filterremovenan.cpp
+    filterremovenan.cpp \
+    filterpassthrough.cpp \
+    filternoise.cpp
 
 HEADERS  += pclacquisition.h \
     texture.h \
@@ -34,7 +36,9 @@ HEADERS  += pclacquisition.h \
     registration.h \
     defineType.h \
     filters.h \
-    filterremovenan.h
+    filterremovenan.h \
+    filterpassthrough.h \
+    filternoise.h
 
 FORMS    += pclacquisition.ui \
     texture.ui \
@@ -42,7 +46,9 @@ FORMS    += pclacquisition.ui \
     cloudwindows.ui \
     registration.ui \
     filters.ui \
-    filterremovenan.ui
+    filterremovenan.ui \
+    filterpassthrough.ui \
+    filternoise.ui
 
 INCLUDEPATH += /usr/include/pcl-1.7 /usr/local/include/vtk-5.8
 LIBS += /usr/lib

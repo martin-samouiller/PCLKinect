@@ -32,10 +32,19 @@
       </item>
       <item>
        <widget class="QPushButton" name="btn_LED">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+          <horstretch>40</horstretch>
+          <verstretch>40</verstretch>
+         </sizepolicy>
+        </property>
         <property name="maximumSize">
          <size>
-          <width>20</width>
-          <height>20</height>
+          <width>40</width>
+          <height>40</height>
          </size>
         </property>
         <property name="text">

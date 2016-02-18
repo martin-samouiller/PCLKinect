@@ -43,6 +43,10 @@ public:
     ~Texture();
     void
     init(QStringList _listCloud , DictionaryCloudPtr _listCloudPtr , DictionaryCloudName _listCloudsName); //Initialise l'outil de mesh avec un nuage de point
+    void
+    majParameters();
+    void
+    majInfosAngles();
 
 private slots:
     void
@@ -68,6 +72,16 @@ private slots:
 
     void
     eventSlotValueTriangle();
+
+    void on_spinBox_KSearch_valueChanged(int arg1);
+
+    void on_dspinBox_Mu_valueChanged(double arg1);
+
+    void on_dspinBox_MaximunSurf_valueChanged(double arg1);
+
+    void on_dspinBox_MinAngle_valueChanged(double arg1);
+
+    void on_dspinBox_MaxAngle_valueChanged(double arg1);
 
 protected:
     boost::shared_ptr<pcl::visualization::PCLVisualizer> viewerCloud;
