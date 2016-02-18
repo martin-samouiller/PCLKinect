@@ -102,7 +102,17 @@
              </widget>
             </item>
             <item>
-             <widget class="QDoubleSpinBox" name="dspinBox_MaximunSurf"/>
+             <widget class="QDoubleSpinBox" name="dspinBox_MaximunSurf">
+              <property name="minimum">
+               <double>-7.000000000000000</double>
+              </property>
+              <property name="maximum">
+               <double>7.000000000000000</double>
+              </property>
+              <property name="value">
+               <double>3.140000000000000</double>
+              </property>
+             </widget>
             </item>
             <item>
              <widget class="QLabel" name="label_7">
@@ -112,7 +122,17 @@
              </widget>
             </item>
             <item>
-             <widget class="QDoubleSpinBox" name="dspinBox_MinAngle"/>
+             <widget class="QDoubleSpinBox" name="dspinBox_MinAngle">
+              <property name="minimum">
+               <double>-7.000000000000000</double>
+              </property>
+              <property name="maximum">
+               <double>7.000000000000000</double>
+              </property>
+              <property name="value">
+               <double>2.400000000000000</double>
+              </property>
+             </widget>
             </item>
             <item>
              <widget class="QLabel" name="label_8">
@@ -122,7 +142,17 @@
              </widget>
             </item>
             <item>
-             <widget class="QDoubleSpinBox" name="dspinBox_MaxAngle"/>
+             <widget class="QDoubleSpinBox" name="dspinBox_MaxAngle">
+              <property name="minimum">
+               <double>-7.000000000000000</double>
+              </property>
+              <property name="maximum">
+               <double>7.000000000000000</double>
+              </property>
+              <property name="value">
+               <double>5.400000000000000</double>
+              </property>
+             </widget>
             </item>
             <item>
              <widget class="QLabel" name="lbl_Infos">

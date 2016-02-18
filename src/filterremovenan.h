@@ -26,6 +26,9 @@ private slots:
     void
     on_pushButton_clicked();
 
+    void
+    on_btn_subSample_clicked();
+
 private:
     Ui::FilterRemoveNaN *ui;
     PointCloudT::Ptr _cloudSrc;

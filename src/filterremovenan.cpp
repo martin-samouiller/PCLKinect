@@ -36,3 +36,20 @@ void FilterRemoveNaN::on_pushButton_clicked()
 
   emit signalFinishFilter();
 }
+
+
+void FilterRemoveNaN::on_btn_subSample_clicked()
+{
+    float size_sub = ui->dSpinBox_subsample->value();
+
+    //create passtrhough filter
+    pcl::VoxelGrid<PointT> voxel_grid;
+
+    voxel_grid.setInputCloud(_cloudSrc);
+
+    //set cell/voxel size to x.x meters in each dimension
+    voxel_grid.setLeafSize(size_sub, size_sub,size_sub);
+    voxel_grid.filter(*_cloudFinal);
+
+    emit signalFinishFilter();
+}

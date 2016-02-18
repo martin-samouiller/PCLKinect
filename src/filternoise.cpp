@@ -10,6 +10,7 @@
  * La sortie est calculée et stockée dans cloud_filtered
  * */
 
+///Classe permettant de supprimer le bruit dans un nuage de point
 
 FilterNoise::FilterNoise(QWidget *parent) :
     QWidget(parent),
@@ -44,6 +45,8 @@ FilterNoise::startTraitement()
   sor.setMeanK (_meanK);
   sor.setStddevMulThresh (stddevMul);
   sor.filter (*_cloudFinal);
+
+
 
   emit signalFinishFilter();
 
